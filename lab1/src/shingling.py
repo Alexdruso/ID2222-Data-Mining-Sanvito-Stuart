@@ -1,8 +1,9 @@
 import functools
+from typing import Set
 
 
 @functools.lru_cache()
-def shingling(document: str, k: int) -> set[int]:
+def shingling(document: str, k: int) -> Set[int]:
     result = set()
     document_length = len(document)
 
