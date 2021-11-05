@@ -2,7 +2,7 @@ import functools
 
 
 @functools.lru_cache()
-def shinglings(document: str, k: int) -> set:
+def shingling(document: str, k: int) -> set:
     result = set()
     document_length = len(document)
 
