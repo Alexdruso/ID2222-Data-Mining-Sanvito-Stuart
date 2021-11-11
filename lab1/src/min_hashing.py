@@ -3,12 +3,12 @@ from typing import Set
 import numpy as np
 
 
-def min_hash(A: Set[int], hash_len: int = 100, seed: int = 0) -> np.ndarray:
+def min_hash(A: Set[int], hash_length: int = 100, seed: int = 0) -> np.ndarray:
     """
     The function takes as input the set of hashed shingling in a document and returns a vector representation of the
     document hashed through min hashing.
     :param A: the set of hashed shingling representing a document
-    :param hash_len: the length of the signature to be returned
+    :param hash_length: the length of the signature to be returned
     :param seed: the seed used to generate the hash functions
     :return: a vector representation of the document, with len=hash_len
     """
@@ -20,9 +20,9 @@ def min_hash(A: Set[int], hash_len: int = 100, seed: int = 0) -> np.ndarray:
         a=generator.integers(
             low=min_value,
             high=max_value,
-            size=hash_len * 2
+            size=hash_length * 2
         ),
-        size=(hash_len, 2),
+        size=(hash_length, 2),
         replace=False
     )
 
