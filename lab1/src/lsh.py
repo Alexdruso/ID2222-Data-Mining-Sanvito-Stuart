@@ -49,7 +49,7 @@ def lsh(M: np.ndarray, t: float, b: int = 1) -> Set[Tuple[int, int]]:
                 collision_hashmap[document_band_hash] = {document_index}
 
         for collision_set in collision_hashmap.values():
-            candidates.update(set(combinations(collision_set, 2)))
+            candidates |= set(combinations(collision_set, 2))
 
     return set(
         filter(
