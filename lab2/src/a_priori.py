@@ -53,6 +53,26 @@ def find_frequent_singletons(baskets: List[Set[int]], s: int = 1) -> Dict[Tuple[
     )
 
 
+def generate_candidate_item_sets(
+        precedent_item_sets: Set[Tuple[int, ...]],
+        frequent_singletons: Set[Tuple[int]]
+) -> Set[Tuple[int, ...]]:
+    """
+    This function returns the set of candidate new frequent itemsets for step k+1 of the a priori algorithm
+     by combining the itemsets found at step k of the algorithm with frequent singletons.
+
+    :param precedent_item_sets: the frequent itemsets found at time k of the algorithm
+    :param frequent_singletons: the frequent singletons in the dataset
+    :return: a set of candidate frequent itemsets of length k+1
+    """
+    return {
+        item_set + singleton
+        for item_set in precedent_item_sets
+        for singleton in frequent_singletons
+        if singleton not in item_set
+    }
+
+
 def find_frequent_item_sets(file: str, s: int = 1) -> Dict[Tuple[int, ...], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items.
@@ -70,10 +90,14 @@ def find_frequent_item_sets(file: str, s: int = 1) -> Dict[Tuple[int, ...], int]
 
     frequent_singletons = find_frequent_singletons(baskets=baskets, s=s)
     frequent_item_sets.update(frequent_singletons)
+    frequent_singletons = set(frequent_singletons.keys())
 
-    precedent_frequent_item_sets = frequent_singletons.keys()
+    precedent_frequent_item_sets = frequent_singletons
     for _ in range(1, largest_item_set_size + 1):
-        print('kek')
+        candidate_item_sets = generate_candidate_item_sets(
+            precedent_item_sets=precedent_frequent_item_sets,
+            frequent_singletons=frequent_singletons
+        )
 
     return frequent_item_sets
 
