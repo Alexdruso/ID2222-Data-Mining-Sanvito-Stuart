@@ -1,7 +1,7 @@
-from typing import Set, Tuple
+from typing import Tuple, Dict
 
 
-def find_frequent_item_sets(file: str, s: int = 1) -> Set[Tuple[int, ...]]:
+def find_frequent_item_sets(file: str, s: int = 1) -> Dict[Tuple[int, ...], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items.
     The function then generates the set of frequent itemsets having support greater or equal than s with the apriori
@@ -9,8 +9,10 @@ def find_frequent_item_sets(file: str, s: int = 1) -> Set[Tuple[int, ...]]:
 
     :param file: the path to the input file
     :param s: the minimum support required to consider an itemset frequent
-    :return: the set of all frequent itemsets, represented as tuples
+    :return: the set of all frequent itemsets, represented as tuples, mapped to their support
     """
+
+    frequent_item_sets: Dict[Tuple[int, ...], int] = {}
 
     with open(file, "r") as f:
         baskets = list(
@@ -27,6 +29,8 @@ def find_frequent_item_sets(file: str, s: int = 1) -> Set[Tuple[int, ...]]:
             baskets
         )
     )
+
+    return frequent_item_sets
 
 if __name__ == "__main__":
     print(
