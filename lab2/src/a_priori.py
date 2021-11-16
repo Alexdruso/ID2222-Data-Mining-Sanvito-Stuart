@@ -2,7 +2,9 @@ from typing import Tuple, Dict, List, Set
 from collections import defaultdict
 
 
-def read_dataset(file: str) -> Tuple[List[Set[int]], int]:
+def read_dataset(
+        file: str
+) -> Tuple[List[Set[int]], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items and returns
     the list of the baskets and the maximum basket size.
@@ -30,7 +32,10 @@ def read_dataset(file: str) -> Tuple[List[Set[int]], int]:
     return baskets, largest_item_set_size
 
 
-def find_frequent_singletons(baskets: List[Set[int]], s: int = 1) -> Dict[Tuple[int], int]:
+def find_frequent_singletons(
+        baskets: List[Set[int]],
+        s: int = 1
+) -> Dict[Tuple[int], int]:
     """
     This function finds all the items having a support greater than s across all the baskets.
 
@@ -73,7 +78,29 @@ def generate_candidate_item_sets(
     }
 
 
-def find_frequent_item_sets(file: str, s: int = 1) -> Dict[Tuple[int, ...], int]:
+def filter_frequent_item_sets(
+        baskets,
+        candidate_item_sets,
+        s : int = 1
+) -> Dict[Tuple[int, ...], int]:
+    item_set_to_support = defaultdict(int)
+
+    for basket in baskets:
+        for candidate_item_set in candidate_item_sets:
+
+
+    return dict(
+        filter(
+            lambda element: element[1] > s,
+            item_set_to_support.items()
+        )
+    )
+
+
+def find_frequent_item_sets(
+        file: str,
+        s: int = 1
+) -> Dict[Tuple[int, ...], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items.
     The function then generates the set of frequent itemsets having support greater or equal than s with the apriori
@@ -98,6 +125,14 @@ def find_frequent_item_sets(file: str, s: int = 1) -> Dict[Tuple[int, ...], int]
             precedent_item_sets=precedent_frequent_item_sets,
             frequent_singletons=frequent_singletons
         )
+
+        new_frequent_item_sets = filter_frequent_item_sets(
+            baskets=baskets,
+            candidate_item_sets=candidate_item_sets
+        )
+
+        frequent_item_sets.update(new_frequent_item_sets)
+        precedent_frequent_item_sets = set(new_frequent_item_sets.keys())
 
     return frequent_item_sets
 
