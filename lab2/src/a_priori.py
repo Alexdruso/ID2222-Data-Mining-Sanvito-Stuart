@@ -35,7 +35,7 @@ def read_dataset(
 def find_frequent_singletons(
         baskets: List[Set[int]],
         s: int = 1
-) -> Dict[Tuple[int], int]:
+) -> Dict[Set[int], int]:
     """
     This function finds all the items having a support greater than s across all the baskets.
 
@@ -48,7 +48,7 @@ def find_frequent_singletons(
 
     for basket in baskets:
         for item in basket:
-            item_to_support[(item,)] += 1
+            item_to_support[frozenset([item])] += 1
 
     return dict(
         filter(
@@ -59,9 +59,9 @@ def find_frequent_singletons(
 
 
 def generate_candidate_item_sets(
-        precedent_item_sets: Set[Tuple[int, ...]],
-        frequent_singletons: Set[Tuple[int]]
-) -> Set[Tuple[int, ...]]:
+        precedent_item_sets: Set[Set[int]],
+        frequent_singletons: Set[Set[int]]
+) -> Set[Set[int]]:
     """
     This function returns the set of candidate new frequent itemsets for step k+1 of the a priori algorithm
     by combining the itemsets found at step k of the algorithm with frequent singletons.
@@ -71,7 +71,7 @@ def generate_candidate_item_sets(
     :return: a set of candidate frequent itemsets of length k+1
     """
     return {
-        item_set + singleton
+        item_set.union(singleton)
         for item_set in precedent_item_sets
         for singleton in frequent_singletons
         if singleton not in item_set
@@ -80,14 +80,14 @@ def generate_candidate_item_sets(
 
 def filter_frequent_item_sets(
         baskets: List[Set[int]],
-        candidate_item_sets: Set[Tuple[int, ...]],
+        candidate_item_sets: Set[Set[int]],
         s: int = 1
-) -> Dict[Tuple[int, ...], int]:
+) -> Dict[Set[int], int]:
     item_set_to_support = defaultdict(int)
 
     for basket in baskets:
         for candidate_item_set in candidate_item_sets:
-            if set(candidate_item_set).issubset(basket):
+            if candidate_item_set.issubset(basket):
                 item_set_to_support[candidate_item_set] += 1
 
     return dict(
@@ -102,7 +102,7 @@ def find_frequent_item_sets(
         file: str,
         s: int = 1,
         maximum_item_set_size: int = None
-) -> Dict[Tuple[int, ...], int]:
+) -> Dict[Set[int], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items.
     The function then generates the set of frequent itemsets having support greater or equal than s and maximum size
@@ -111,10 +111,10 @@ def find_frequent_item_sets(
     :param file: the path to the input file
     :param s: the minimum support required to consider an itemset frequent
     :param maximum_item_set_size: the maximum size of the frequent itemsets, if None it is the maximum size of a basket
-    :return: the set of all frequent itemsets, represented as tuples, mapped to their support
+    :return: the set of all frequent itemsets, represented as frozensets, mapped to their support
     """
 
-    frequent_item_sets: Dict[Tuple[int, ...], int] = {}
+    frequent_item_sets: Dict[Set[int], int] = {}
 
     baskets, largest_item_set_size = read_dataset(file=file)
 
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     print(
         find_frequent_item_sets(
             file='../data/T10I4D100K.dat',
-            s=1,
+            s=3000,
             maximum_item_set_size=2
         )
     )
