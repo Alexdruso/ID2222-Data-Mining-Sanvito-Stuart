@@ -1,5 +1,6 @@
 from typing import Tuple, Dict, List, Set
 from collections import defaultdict
+import time
 
 
 def read_dataset(
@@ -83,12 +84,11 @@ def filter_frequent_item_sets(
         candidate_item_sets: Set[Set[int]],
         s: int = 1
 ) -> Dict[Set[int], int]:
-    item_set_to_support = defaultdict(int)
 
-    for basket in baskets:
-        for candidate_item_set in candidate_item_sets:
-            if candidate_item_set.issubset(basket):
-                item_set_to_support[candidate_item_set] += 1
+    item_set_to_support = {
+       candidate_item_set: sum(map(lambda basket: candidate_item_set.issubset(basket), baskets))
+       for candidate_item_set in candidate_item_sets
+    }
 
     return dict(
         filter(
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     print(
         find_frequent_item_sets(
             file='../data/T10I4D100K.dat',
-            s=3000,
+            s=1,
             maximum_item_set_size=2
         )
     )
