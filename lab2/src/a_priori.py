@@ -1,5 +1,6 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 from typing import Dict, List, Set, KeysView
+from itertools import combinations
 
 
 def read_dataset(
@@ -74,12 +75,17 @@ def generate_candidate_item_sets(
 def filter_frequent_item_sets(
         baskets: List[Set[int]],
         candidate_item_sets: Set[Set[int]],
+        item_set_length: int,
         s: int = 1
 ) -> Dict[Set[int], int]:
-    item_set_to_support = {
-        candidate_item_set: sum(map(lambda basket: candidate_item_set.issubset(basket), baskets))
-        for candidate_item_set in candidate_item_sets
-    }
+    item_set_to_support = Counter(
+        [
+            frozenset(item_set)
+            for basket in baskets
+            for item_set in combinations(basket, item_set_length)
+            if frozenset(item_set) in candidate_item_sets
+        ]
+    )
 
     return dict(
         filter(
@@ -125,6 +131,7 @@ def find_frequent_item_sets(
         new_frequent_item_sets = filter_frequent_item_sets(
             baskets=baskets,
             candidate_item_sets=candidate_item_sets,
+            item_set_length=item_set_length,
             s=s
         )
 
@@ -141,6 +148,6 @@ if __name__ == "__main__":
     print(
         find_frequent_item_sets(
             file='../data/T10I4D100K.dat',
-            s=1500
+            s=1000
         )
     )
