@@ -120,7 +120,7 @@ def find_frequent_item_sets(
             item_set_length=item_set_length
         )
 
-        print("Candidates generated!")
+        print("{} candidates generated!".format(len(candidate_item_sets)))
 
         new_frequent_item_sets = filter_frequent_item_sets(
             baskets=baskets,
@@ -141,6 +141,6 @@ if __name__ == "__main__":
     print(
         find_frequent_item_sets(
             file='../data/T10I4D100K.dat',
-            s=1
+            s=1500
         )
     )
