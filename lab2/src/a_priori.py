@@ -120,8 +120,6 @@ def find_frequent_item_sets(
             item_set_length=item_set_length
         )
 
-        print(candidate_item_sets)
-
         print("Candidates generated!")
 
         new_frequent_item_sets = filter_frequent_item_sets(
