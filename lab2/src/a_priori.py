@@ -1,17 +1,16 @@
-from typing import Tuple, Dict, List, Set
 from collections import defaultdict
-import time
+from typing import Dict, List, Set, KeysView
 
 
 def read_dataset(
         file: str
-) -> Tuple[List[Set[int]], int]:
+) -> List[Set[int]]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items and returns
-    the list of the baskets and the maximum basket size.
+    the list of the baskets.
 
     :param file: the path to the input file
-    :return: a tuple containing the list of baskets and the maximum basket size
+    :return: the list of baskets
     """
 
     with open(file, "r") as f:
@@ -23,14 +22,7 @@ def read_dataset(
         )
     f.close()
 
-    largest_item_set_size: int = max(
-        map(
-            len,
-            baskets
-        )
-    )
-
-    return baskets, largest_item_set_size
+    return baskets
 
 
 def find_frequent_singletons(
@@ -60,22 +52,22 @@ def find_frequent_singletons(
 
 
 def generate_candidate_item_sets(
-        precedent_item_sets: Set[Set[int]],
-        frequent_singletons: Set[Set[int]]
+        precedent_item_sets: KeysView[Set[int]],
+        item_set_length: int
 ) -> Set[Set[int]]:
     """
     This function returns the set of candidate new frequent itemsets for step k+1 of the a priori algorithm
-    by combining the itemsets found at step k of the algorithm with frequent singletons.
+    by combining the itemsets found at step k.
 
     :param precedent_item_sets: the frequent itemsets found at time k of the algorithm
-    :param frequent_singletons: the frequent singletons in the dataset
+    :param item_set_length: the length of the next candidates to be returned
     :return: a set of candidate frequent itemsets of length k+1
     """
     return {
-        item_set.union(singleton)
-        for item_set in precedent_item_sets
-        for singleton in frequent_singletons
-        if singleton not in item_set
+        item_set_left | item_set_right
+        for item_set_left in precedent_item_sets
+        for item_set_right in precedent_item_sets
+        if len(item_set_left | item_set_right) == item_set_length
     }
 
 
@@ -84,10 +76,9 @@ def filter_frequent_item_sets(
         candidate_item_sets: Set[Set[int]],
         s: int = 1
 ) -> Dict[Set[int], int]:
-
     item_set_to_support = {
-       candidate_item_set: sum(map(lambda basket: candidate_item_set.issubset(basket), baskets))
-       for candidate_item_set in candidate_item_sets
+        candidate_item_set: sum(map(lambda basket: candidate_item_set.issubset(basket), baskets))
+        for candidate_item_set in candidate_item_sets
     }
 
     return dict(
@@ -100,8 +91,7 @@ def filter_frequent_item_sets(
 
 def find_frequent_item_sets(
         file: str,
-        s: int = 1,
-        maximum_item_set_size: int = None
+        s: int = 1
 ) -> Dict[Set[int], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items.
@@ -110,27 +100,29 @@ def find_frequent_item_sets(
 
     :param file: the path to the input file
     :param s: the minimum support required to consider an itemset frequent
-    :param maximum_item_set_size: the maximum size of the frequent itemsets, if None it is the maximum size of a basket
     :return: the set of all frequent itemsets, represented as frozensets, mapped to their support
     """
 
-    frequent_item_sets: Dict[Set[int], int] = {}
+    baskets = read_dataset(file=file)
 
-    baskets, largest_item_set_size = read_dataset(file=file)
+    # The first frequent itemsets are the frequent singletons themselves
+    frequent_item_sets: Dict[Set[int], int] = find_frequent_singletons(baskets=baskets, s=s)
 
-    maximum_item_set_size = min(maximum_item_set_size, largest_item_set_size) if maximum_item_set_size is not None \
-        else largest_item_set_size
+    print("The most frequent singletons have been calculated.")
 
-    frequent_singletons = find_frequent_singletons(baskets=baskets, s=s)
-    frequent_item_sets.update(frequent_singletons)
-    frequent_singletons = set(frequent_singletons.keys())
+    precedent_frequent_item_sets = frequent_item_sets.keys()
+    item_set_length = 2
+    while len(precedent_frequent_item_sets) > 1:
+        print("Computing frequent itemsets of length {}...".format(item_set_length))
 
-    precedent_frequent_item_sets = frequent_singletons
-    for _ in range(2, maximum_item_set_size + 1):
         candidate_item_sets = generate_candidate_item_sets(
             precedent_item_sets=precedent_frequent_item_sets,
-            frequent_singletons=frequent_singletons
+            item_set_length=item_set_length
         )
+
+        print(candidate_item_sets)
+
+        print("Candidates generated!")
 
         new_frequent_item_sets = filter_frequent_item_sets(
             baskets=baskets,
@@ -139,7 +131,10 @@ def find_frequent_item_sets(
         )
 
         frequent_item_sets.update(new_frequent_item_sets)
-        precedent_frequent_item_sets = set(new_frequent_item_sets.keys())
+        precedent_frequent_item_sets = new_frequent_item_sets.keys()
+        item_set_length += 1
+
+        print("Done!")
 
     return frequent_item_sets
 
@@ -148,7 +143,6 @@ if __name__ == "__main__":
     print(
         find_frequent_item_sets(
             file='../data/T10I4D100K.dat',
-            s=1,
-            maximum_item_set_size=2
+            s=1
         )
     )
