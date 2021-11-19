@@ -78,6 +78,15 @@ def filter_frequent_item_sets(
         item_set_length: int,
         s: int = 1
 ) -> Dict[Set[int], int]:
+    """
+    This function finds all the itemsets having a support greater than s across all the baskets.
+
+    :param baskets: the list of all baskets represented as sets
+    :param candidate_item_sets: the set of itemsets candidate to be frequent
+    :param item_set_length: the length of the itemsets
+    :param s: the threshold support to consider an itemset as frequent
+    :return: the set of all frequent itemsets
+    """
     item_set_to_support = Counter(
         [
             frozenset(item_set)
