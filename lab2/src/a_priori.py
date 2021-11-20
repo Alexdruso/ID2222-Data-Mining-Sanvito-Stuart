@@ -1,5 +1,5 @@
 from collections import defaultdict, Counter
-from typing import Dict, List, Set, KeysView
+from typing import Dict, List, Set, KeysView, FrozenSet
 from itertools import combinations
 
 
@@ -29,7 +29,7 @@ def read_dataset(
 def find_frequent_singletons(
         baskets: List[Set[int]],
         s: int = 1
-) -> Dict[Set[int], int]:
+) -> Dict[FrozenSet[int], int]:
     """
     This function finds all the items having a support greater than s across all the baskets.
 
@@ -53,9 +53,9 @@ def find_frequent_singletons(
 
 
 def generate_candidate_item_sets(
-        precedent_item_sets: KeysView[Set[int]],
+        precedent_item_sets: KeysView[FrozenSet[int]],
         item_set_length: int
-) -> Set[Set[int]]:
+) -> Set[FrozenSet[int]]:
     """
     This function returns the set of candidate new frequent itemsets for step k+1 of the a priori algorithm
     by combining the itemsets found at step k.
@@ -74,10 +74,10 @@ def generate_candidate_item_sets(
 
 def filter_frequent_item_sets(
         baskets: List[Set[int]],
-        candidate_item_sets: Set[Set[int]],
+        candidate_item_sets: Set[FrozenSet[int]],
         item_set_length: int,
         s: int = 1
-) -> Dict[Set[int], int]:
+) -> Dict[FrozenSet[int], int]:
     """
     This function finds all the itemsets having a support greater than s across all the baskets.
 
@@ -107,7 +107,7 @@ def filter_frequent_item_sets(
 def find_frequent_item_sets(
         file: str,
         s: int = 1
-) -> Dict[Set[int], int]:
+) -> Dict[FrozenSet[int], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items.
     The function then generates the set of frequent itemsets having support greater or equal than s and maximum size
@@ -121,7 +121,7 @@ def find_frequent_item_sets(
     baskets = read_dataset(file=file)
 
     # The first frequent itemsets are the frequent singletons themselves
-    frequent_item_sets: Dict[Set[int], int] = find_frequent_singletons(baskets=baskets, s=s)
+    frequent_item_sets: Dict[FrozenSet[int], int] = find_frequent_singletons(baskets=baskets, s=s)
 
     print("The most frequent singletons have been calculated.")
 
