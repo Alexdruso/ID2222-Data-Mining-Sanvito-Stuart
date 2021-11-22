@@ -1,6 +1,7 @@
 from collections import defaultdict, Counter
 from typing import Dict, List, Set, KeysView, FrozenSet
 from itertools import combinations
+import numpy as np
 
 
 def read_dataset(
@@ -28,7 +29,8 @@ def read_dataset(
 
 def find_frequent_singletons(
         baskets: List[Set[int]],
-        s: int = 1
+        s: int = 1,
+        verbose: bool = False,
 ) -> Dict[FrozenSet[int], int]:
     """
     This function finds all the items having a support greater than s across all the baskets.
@@ -43,6 +45,11 @@ def find_frequent_singletons(
     for basket in baskets:
         for item in basket:
             item_to_support[frozenset([item])] += 1
+
+    if verbose:
+        print(f'The market contains {len(item_to_support)} different items.')
+        print(
+            f'The average support is {np.mean(list(item_to_support.values())):.2f}')
 
     return dict(
         filter(
@@ -106,7 +113,8 @@ def filter_frequent_item_sets(
 
 def find_frequent_item_sets(
         file: str,
-        s: int = 1
+        s: int = 1,
+        verbose: bool = False,
 ) -> Dict[FrozenSet[int], int]:
     """
     This function reads from a file .dat assuming that on every row of the file there is a basket of items.
@@ -121,34 +129,47 @@ def find_frequent_item_sets(
     baskets = read_dataset(file=file)
 
     # The first frequent itemsets are the frequent singletons themselves
-    frequent_item_sets: Dict[FrozenSet[int], int] = find_frequent_singletons(baskets=baskets, s=s)
+    frequent_item_sets: Dict[FrozenSet[int], int] = find_frequent_singletons(
+        baskets=baskets, s=s, verbose=verbose)
 
-    print("The most frequent singletons have been calculated.")
+    if verbose:
+        print(
+            f'The most frequent singletons have been calculated. {len(frequent_item_sets)} singletons was/were found.')
 
     precedent_frequent_item_sets = frequent_item_sets.keys()
     item_set_length = 2
     while len(precedent_frequent_item_sets) > 1:
-        print("Computing frequent itemsets of length {}...".format(item_set_length))
+        if verbose:
+            print("Computing frequent itemsets of length {}...".format(
+                item_set_length))
 
         candidate_item_sets = generate_candidate_item_sets(
             precedent_item_sets=precedent_frequent_item_sets,
             item_set_length=item_set_length
         )
 
-        print("{} candidates generated!".format(len(candidate_item_sets)))
+        if verbose:
+            print("{} candidates generated!".format(len(candidate_item_sets)))
 
-        new_frequent_item_sets = filter_frequent_item_sets(
-            baskets=baskets,
-            candidate_item_sets=candidate_item_sets,
-            item_set_length=item_set_length,
-            s=s
-        )
+        if len(candidate_item_sets) > 0:
+            new_frequent_item_sets = filter_frequent_item_sets(
+                baskets=baskets,
+                candidate_item_sets=candidate_item_sets,
+                item_set_length=item_set_length,
+                s=s
+            )
 
-        frequent_item_sets.update(new_frequent_item_sets)
-        precedent_frequent_item_sets = new_frequent_item_sets.keys()
-        item_set_length += 1
+            frequent_item_sets.update(new_frequent_item_sets)
+            precedent_frequent_item_sets = new_frequent_item_sets.keys()
+            item_set_length += 1
 
-        print("Done!")
+            if verbose:
+                print(
+                    f'Done! {len(new_frequent_item_sets)} frequent items was/were found.')
+
+    if verbose:
+        print(
+            f'\nIn total {len(frequent_item_sets)} frequent items were found.')
 
     return frequent_item_sets
 
