@@ -35,6 +35,7 @@ def find_frequent_singletons(
     """
     This function finds all the items having a support greater than s across all the baskets.
 
+    :param verbose: if set to true, prints information on the process
     :param baskets: the list of all baskets represented as sets
     :param s: the threshold support to consider an item as frequent
     :return: the set of all frequent singletons
@@ -121,6 +122,7 @@ def find_frequent_item_sets(
     The function then generates the set of frequent itemsets having support greater or equal than s and maximum size
     equal to maximum_item_set_size with the apriori algorithm.
 
+    :param verbose:  if set to true, prints information on the process
     :param file: the path to the input file
     :param s: the minimum support required to consider an itemset frequent
     :return: the set of all frequent itemsets, represented as frozensets, mapped to their support
