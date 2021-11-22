@@ -48,9 +48,12 @@ def find_frequent_singletons(
             item_to_support[frozenset([item])] += 1
 
     if verbose:
-        print(f'The market contains {len(item_to_support)} different items.')
         print(
-            f'The average support is {np.mean(list(item_to_support.values())):.2f}')
+            f'The market contains {len(item_to_support)} different items.'
+        )
+        print(
+            f'The average support is {np.mean(list(item_to_support.values())):.2f}'
+        )
 
     return dict(
         filter(
@@ -136,14 +139,16 @@ def find_frequent_item_sets(
 
     if verbose:
         print(
-            f'The most frequent singletons have been calculated. {len(frequent_item_sets)} singletons was/were found.')
+            f'The most frequent singletons have been calculated. {len(frequent_item_sets)} singletons was/were found.'
+        )
 
     precedent_frequent_item_sets = frequent_item_sets.keys()
     item_set_length = 2
     while len(precedent_frequent_item_sets) > 1:
         if verbose:
-            print("Computing frequent itemsets of length {}...".format(
-                item_set_length))
+            print(
+                "Computing frequent itemsets of length {}...".format(item_set_length)
+            )
 
         candidate_item_sets = generate_candidate_item_sets(
             precedent_item_sets=precedent_frequent_item_sets,
@@ -151,7 +156,9 @@ def find_frequent_item_sets(
         )
 
         if verbose:
-            print("{} candidates generated!".format(len(candidate_item_sets)))
+            print(
+                "{} candidates generated!".format(len(candidate_item_sets))
+            )
 
         if len(candidate_item_sets) > 0:
             new_frequent_item_sets = filter_frequent_item_sets(
@@ -167,11 +174,13 @@ def find_frequent_item_sets(
 
             if verbose:
                 print(
-                    f'Done! {len(new_frequent_item_sets)} frequent items was/were found.')
+                    f'Done! {len(new_frequent_item_sets)} frequent items was/were found.'
+                )
 
     if verbose:
         print(
-            f'\nIn total {len(frequent_item_sets)} frequent items were found.')
+            f'\nIn total {len(frequent_item_sets)} frequent items were found.'
+        )
 
     return frequent_item_sets
 
