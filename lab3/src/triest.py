@@ -230,7 +230,8 @@ class TriestImproved(Triest):
 
 
 if __name__ == "__main__":
-    TriestBase(
+    TriestImproved(
         file='../data/facebook_combined.txt',
-        M=100
+        M=1000,
+        verbose=True
     ).run()
