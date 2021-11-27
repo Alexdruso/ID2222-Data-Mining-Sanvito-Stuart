@@ -119,7 +119,7 @@ class TriestBase(Triest):
                 if self.verbose and self.t % 1000 == 0:
                     print("Currently sampling element {} in the stream.".format(self.t))
 
-                if self._sample_edge(edge, self.t):
+                if self._sample_edge(self.t):
                     self.S.add(edge)
                     self._update_counters(lambda x, y: x + y, edge)
 
@@ -218,7 +218,7 @@ class TriestImproved(Triest):
 
                 self._update_counters(lambda x, y: x + y, edge)
 
-                if self._sample_edge(edge, self.t):
+                if self._sample_edge(self.t):
                     self.S.add(edge)
 
                 if self.verbose and self.t % 1000 == 0:
