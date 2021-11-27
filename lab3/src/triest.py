@@ -125,7 +125,8 @@ class TriestBase(Triest):
 
                 if self.verbose and self.t % 1000 == 0:
                     print("The current estimate for the number of triangles is {}.".format(
-                        self.xi * self.tau))
+                        self.xi * self.tau)
+                    )
 
             return self.xi * self.tau
 
@@ -223,7 +224,8 @@ class TriestImproved(Triest):
 
                 if self.verbose and self.t % 1000 == 0:
                     print(
-                        "The current estimate for the number of triangles is {}.".format(self.tau))
+                        "The current estimate for the number of triangles is {}.".format(self.tau)
+                    )
 
             return self.tau
 
