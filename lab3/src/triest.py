@@ -35,10 +35,11 @@ class Triest:
     def xi(self) -> float:
         return max(
             1.0,
-            (self.t * (self.t - 1) * (self.t - 2)) / (self.M * (self.M - 1) * (self.M - 2))
+            (self.t * (self.t - 1) * (self.t - 2)) /
+            (self.M * (self.M - 1) * (self.M - 2))
         )
 
-    def _sample_edge(self, edge: FrozenSet[int], t: int) -> bool:
+    def _sample_edge(self, t: int) -> bool:
         """
         This function determines if the new edge can be inserted in memory. If yes and if the memory if full,
         the function proceeds to remove a random edge from the memory to make space.
@@ -71,10 +72,8 @@ class Triest:
             [
                 {
                     node
-                    for link in self.S
-                    if vertex in link
-                    for node in link
-                    if node != vertex
+                    for link in self.S if vertex in link
+                    for node in link if node != vertex
                 }
                 for vertex in edge
             ]
@@ -125,7 +124,8 @@ class TriestBase(Triest):
                     self._update_counters(lambda x, y: x + y, edge)
 
                 if self.verbose and self.t % 1000 == 0:
-                    print("The current estimate for the number of triangles is {}.".format(self.xi * self.tau))
+                    print("The current estimate for the number of triangles is {}.".format(
+                        self.xi * self.tau))
 
             return self.xi * self.tau
 
@@ -162,10 +162,8 @@ class TriestImproved(Triest):
             [
                 {
                     node
-                    for link in self.S
-                    if vertex in link
-                    for node in link
-                    if node != vertex
+                    for link in self.S if vertex in link
+                    for node in link if node != vertex
                 }
                 for vertex in edge
             ]
@@ -178,7 +176,7 @@ class TriestImproved(Triest):
             for node in edge:
                 self.tau_vertices[node] += self.eta
 
-    def _sample_edge(self, edge: FrozenSet[int], t: int) -> bool:
+    def _sample_edge(self, t: int) -> bool:
         """
         This function determines if the new edge can be inserted in memory. If yes and if the memory if full,
         the function proceeds to remove a random edge from the memory to make space.
@@ -224,7 +222,8 @@ class TriestImproved(Triest):
                     self.S.add(edge)
 
                 if self.verbose and self.t % 1000 == 0:
-                    print("The current estimate for the number of triangles is {}.".format(self.tau))
+                    print(
+                        "The current estimate for the number of triangles is {}.".format(self.tau))
 
             return self.tau
 
