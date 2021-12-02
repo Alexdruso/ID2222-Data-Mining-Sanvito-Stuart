@@ -26,8 +26,8 @@ def spectral_clustering(
     “On Spectral Clustering: Analysis and an algorithm” (Links to an external site.)
     by Andrew Y. Ng, Michael I. Jordan, Yair Weiss
 
-    This function computes k clusters in the graph contained in file with spectral clustering and returns a numpy array of shape
-    (number of vertices,) containing the label for each vertex.
+    This function computes k clusters in the graph contained in file with spectral clustering and returns a numpy
+    array of shape (number of vertices,) containing the label for each vertex.
 
     :param file: the path to the file representing the graph
     :param number_of_clusters_selection: either auto or manual, determines how k is selected
