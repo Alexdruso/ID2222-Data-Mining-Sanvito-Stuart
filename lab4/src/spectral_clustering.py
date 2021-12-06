@@ -2,12 +2,12 @@ import networkx as nx
 import numpy as np
 from scipy import linalg
 from sklearn.cluster import KMeans
-from typing import Callable, Dict
+from typing import Callable, Dict, Tuple
 
 selection_methods: Dict[str, Callable[[np.ndarray, int], int]] = {
     # +2 because 1 accounts for indices starting from 0 and 1 accounts for the fact that k is the index of the NEXT
     # eigenvalue
-    'auto': lambda eigenvalues, k: np.argmin(np.ediff1d(eigenvalues)) + 2,
+    'auto': lambda eigenvalues, k: np.argmin(np.ediff1d(eigenvalues)) + 1,
     'manual': lambda eigenvalues, k: k
 }
 
@@ -17,7 +17,7 @@ def spectral_clustering(
         number_of_clusters_selection: str = 'auto',
         k: int = 10,
         verbose: bool = True
-) -> np.ndarray:
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     This function implements the algorithm described in
 
