@@ -1,18 +1,26 @@
 import networkx as nx
 
 
-def load_graph(file: str) -> nx.Graph:
+def load_graph(file: str, weight: bool = False) -> nx.Graph:
     """
-    This function takes as input the path to a file containing a list of edges in a graph and outputs the
-    graph in the form of a networkx class.
+    This function takes as input the path to a file containing a list of edges (and optionally weights)
+    in a graph and outputs the graph in the form of a networkx class.
 
     :param file: the path to the file representing the graph
+    :param weight: indicates if the file contains edge weights or not
     :return: a nx.Graph instance representing the graph
     """
-    return nx.read_edgelist(
-        path=file,
-        delimiter=','
-    )
+
+    if weight:
+        return nx.read_weighted_edgelist(
+            path=file,
+            delimiter=','
+        )
+    else:
+        return nx.read_edgelist(
+            path=file,
+            delimiter=','
+        )
 
 
 if __name__ == '__main__':

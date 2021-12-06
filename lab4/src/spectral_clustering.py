@@ -4,8 +4,6 @@ from scipy import linalg
 from sklearn.cluster import KMeans
 from typing import Callable, Dict
 
-from utils import load_graph
-
 selection_methods: Dict[str, Callable[[np.ndarray, int], int]] = {
     # +2 because 1 accounts for indices starting from 0 and 1 accounts for the fact that k is the index of the NEXT
     # eigenvalue
@@ -15,7 +13,7 @@ selection_methods: Dict[str, Callable[[np.ndarray, int], int]] = {
 
 
 def spectral_clustering(
-        file: str,
+        G: nx.Graph,
         number_of_clusters_selection: str = 'auto',
         k: int = 10,
         verbose: bool = True
@@ -27,19 +25,17 @@ def spectral_clustering(
     by Andrew Y. Ng, Michael I. Jordan, Yair Weiss
 
     This function computes k clusters in the graph contained in file with spectral clustering and returns a numpy
-    array of shape (number of vertices,) containing the label for each vertex.
+    array of shape (number of vertices,) containing the label for each vertex, the Fiedler vector and
+    the adjacency matrix of the graph
 
-    :param file: the path to the file representing the graph
+    :param G: nx graph
     :param number_of_clusters_selection: either auto or manual, determines how k is selected
     :param k: the number of clusters to be identified, works if selection method is manual
     :param verbose: if true, prints updates on the status of the computation
-    :return: returns a numpy array of shape
-    (number of vertices,) containing the label for each vertex
+    :return: returns a numpy array of shape (number of vertices,) containing the label for each vertex,
+                     a numpy array of shape (number of vertices,) containing the Fiedler vector,
+                     a numpy matrix of shape (number of vertices, number of vertices) containing the adjacency matrix
     """
-    if verbose:
-        print('Loading graph...')
-
-    G: nx.Graph = load_graph(file)
 
     if verbose:
         print('Computing clusters...')
@@ -63,7 +59,7 @@ def spectral_clustering(
     if verbose:
         print('Clusters computed.')
 
-    return result
+    return result, vectors[:, 1], A
 
 
 if __name__ == '__main__':
