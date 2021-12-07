@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.Math.pow;
+
 public class Jabeja {
   final static Logger logger = Logger.getLogger(Jabeja.class);
   private final Config config;
@@ -61,7 +63,7 @@ public class Jabeja {
    * @param nodeId
    */
   private void sampleAndSwap(int nodeId) {
-    Node partner = null;
+    Optional<Node> partner = Optional.empty();
     Node nodep = entireGraph.get(nodeId);
 
     if (
@@ -75,31 +77,63 @@ public class Jabeja {
     if (
             (config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
             || config.getNodeSelectionPolicy() == NodeSelectionPolicy.RANDOM)
-            && partner == null
+            && !partner.isPresent()
     ) {
       // if local policy fails then randomly sample the entire graph
       partner = findPartner(nodeId, getSample(nodeId));
     }
 
     // swap the colors
-    if(partner != null) {
+    if(partner.isPresent()) {
         int tempColor = nodep.getColor();
-        nodep.setColor(partner.getColor());
-        partner.setColor(tempColor);
+        nodep.setColor(partner.get().getColor());
+        partner.get().setColor(tempColor);
         numberOfSwaps++;
       }
   }
 
-  public Node findPartner(int nodeId, Integer[] nodes){
+  public Optional<Node> findPartner(int nodeId, Integer[] nodes){
 
-    Node nodep = entireGraph.get(nodeId);
+    Node nodeP = entireGraph.get(nodeId);
 
-    Node bestPartner = null;
-    double highestBenefit = 0;
+      return Arrays.stream(nodes)
+            .map(entireGraph::get)
+            .filter(
+                    node -> T * getCost(
+                            nodeP,
+                            node.getColor(),
+                            node,
+                            nodeP.getColor()
+                    ) > getCost(
+                            nodeP,
+                            nodeP.getColor(),
+                            node,
+                            node.getColor()
+                    )
+            )
+            .max(
+                    Comparator.comparingDouble(
+                            node -> getCost(
+                                    nodeP,
+                                    node.getColor(),
+                                    node,
+                                    nodeP.getColor()
+                            )
+                    )
+            );
+  }
 
-    // TODO
-
-    return bestPartner;
+    /**
+     * The cost of the nodes having the specified color configuration
+     * @param nodeP
+     * @param nodePColor
+     * @param nodeQ
+     * @param nodeQColor
+     * @return the cost
+     */
+  private Double getCost(Node nodeP, int nodePColor, Node nodeQ, int nodeQColor){
+      return pow(getDegree(nodeP, nodePColor), config.getAlpha())
+              + pow(getDegree(nodeQ, nodeQColor), config.getAlpha());
   }
 
   /**
@@ -185,9 +219,8 @@ public class Jabeja {
   private void report() throws IOException {
     int grayLinks = 0;
     int migrations = 0; // number of nodes that have changed the initial color
-    int size = entireGraph.size();
 
-    for (int i : entireGraph.keySet()) {
+      for (int i : entireGraph.keySet()) {
       Node node = entireGraph.get(i);
       int nodeColor = node.getColor();
       ArrayList<Integer> nodeNeighbours = node.getNeighbours();
