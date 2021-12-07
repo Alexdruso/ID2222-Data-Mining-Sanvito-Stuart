@@ -23,7 +23,7 @@ public class Jabeja {
   //-------------------------------------------------------------------
   public Jabeja(HashMap<Integer, Node> graph, Config config) {
     this.entireGraph = graph;
-    this.nodeIds = new ArrayList(entireGraph.keySet());
+    this.nodeIds = new ArrayList<>(entireGraph.keySet());
     this.round = 0;
     this.numberOfSwaps = 0;
     this.config = config;
@@ -120,16 +120,14 @@ public class Jabeja {
     int size = entireGraph.size();
     ArrayList<Integer> rndIds = new ArrayList<Integer>();
 
-    while (true) {
-      rndId = nodeIds.get(RandNoGenerator.nextInt(size));
-      if (rndId != currentNodeId && !rndIds.contains(rndId)) {
-        rndIds.add(rndId);
-        count--;
-      }
+      do {
+          rndId = nodeIds.get(RandNoGenerator.nextInt(size));
+          if (rndId != currentNodeId && !rndIds.contains(rndId)) {
+              rndIds.add(rndId);
+              count--;
+          }
 
-      if (count == 0)
-        break;
-    }
+      } while (count != 0);
 
     Integer[] ids = new Integer[rndIds.size()];
     return rndIds.toArray(ids);
@@ -153,17 +151,15 @@ public class Jabeja {
     if (size <= count)
       rndIds.addAll(list);
     else {
-      while (true) {
-        index = RandNoGenerator.nextInt(size);
-        rndId = list.get(index);
-        if (!rndIds.contains(rndId)) {
-          rndIds.add(rndId);
-          count--;
-        }
+        do {
+            index = RandNoGenerator.nextInt(size);
+            rndId = list.get(index);
+            if (!rndIds.contains(rndId)) {
+                rndIds.add(rndId);
+                count--;
+            }
 
-        if (count == 0)
-          break;
-      }
+        } while (count != 0);
     }
 
     Integer[] arr = new Integer[rndIds.size()];
