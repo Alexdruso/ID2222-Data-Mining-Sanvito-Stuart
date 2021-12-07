@@ -64,20 +64,30 @@ public class Jabeja {
     Node partner = null;
     Node nodep = entireGraph.get(nodeId);
 
-    if (config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
-            || config.getNodeSelectionPolicy() == NodeSelectionPolicy.LOCAL) {
+    if (
+            config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
+            || config.getNodeSelectionPolicy() == NodeSelectionPolicy.LOCAL
+    ) {
       // swap with random neighbors
-      // TODO
+      partner = findPartner(nodeId, getNeighbors(nodep));
     }
 
-    if (config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
-            || config.getNodeSelectionPolicy() == NodeSelectionPolicy.RANDOM) {
+    if (
+            (config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
+            || config.getNodeSelectionPolicy() == NodeSelectionPolicy.RANDOM)
+            && partner == null
+    ) {
       // if local policy fails then randomly sample the entire graph
-      // TODO
+      partner = findPartner(nodeId, getSample(nodeId));
     }
 
     // swap the colors
-    // TODO
+    if(partner != null) {
+        int tempColor = nodep.getColor();
+        nodep.setColor(partner.getColor());
+        partner.setColor(tempColor);
+        numberOfSwaps++;
+      }
   }
 
   public Node findPartner(int nodeId, Integer[] nodes){
@@ -118,7 +128,7 @@ public class Jabeja {
     int count = config.getUniformRandomSampleSize();
     int rndId;
     int size = entireGraph.size();
-    ArrayList<Integer> rndIds = new ArrayList<Integer>();
+    ArrayList<Integer> rndIds = new ArrayList<>();
 
       do {
           rndId = nodeIds.get(RandNoGenerator.nextInt(size));
@@ -146,7 +156,7 @@ public class Jabeja {
     int rndId;
     int index;
     int size = list.size();
-    ArrayList<Integer> rndIds = new ArrayList<Integer>();
+    ArrayList<Integer> rndIds = new ArrayList<>();
 
     if (size <= count)
       rndIds.addAll(list);
