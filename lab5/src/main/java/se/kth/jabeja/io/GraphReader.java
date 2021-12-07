@@ -66,12 +66,12 @@ public class GraphReader {
         }
 
         String[] parts = strLine.split(DELIMETER);
-        for (int i = 0; i < parts.length; i++) {
-          if (parts[i].equals(EMPTY_STRING)) {
-            continue;
+          for (String part : parts) {
+              if (part.equals(EMPTY_STRING)) {
+                  continue;
+              }
+              neighbours.add(Integer.parseInt(part));
           }
-          neighbours.add(Integer.parseInt(parts[i]));
-        }
 
 
         int color = getColor(numNodes, noOfPartitions, id, colorPolicy);
@@ -131,9 +131,9 @@ public class GraphReader {
       int color = graph.get(i).getColor();
       Integer count = distribution.get(color);
       if (count == null) {
-        count = new Integer(0);
+        count = 0;
       }
-      distribution.put(color, new Integer(count + 1));
+      distribution.put(color, count + 1);
     }
 
     StringBuffer sb = new StringBuffer("Color Distribution : ");

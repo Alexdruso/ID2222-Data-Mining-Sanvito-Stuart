@@ -21,8 +21,7 @@ public class Node {
 	}
 
 	public void setNeighbours(ArrayList<Integer> neighbours) {
-		for (int id : neighbours)
-			this.neighbours.add(id);
+        this.neighbours.addAll(neighbours);
 	}
 	
 	public int getId() {
