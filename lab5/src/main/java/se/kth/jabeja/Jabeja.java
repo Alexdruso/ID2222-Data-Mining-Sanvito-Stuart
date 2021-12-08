@@ -1,6 +1,7 @@
 package se.kth.jabeja;
 
 import org.apache.log4j.Logger;
+import se.kth.jabeja.annealing.Annealer;
 import se.kth.jabeja.config.Config;
 import se.kth.jabeja.config.NodeSelectionPolicy;
 import se.kth.jabeja.io.FileIO;
@@ -9,8 +10,6 @@ import se.kth.jabeja.rand.RandNoGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static java.lang.Math.pow;
 
 public class Jabeja {
   final static Logger logger = Logger.getLogger(Jabeja.class);
@@ -21,6 +20,7 @@ public class Jabeja {
   private int round;
   private float T;
   private boolean resultFileCreated = false;
+  private final Annealer annealer;
 
   //-------------------------------------------------------------------
   public Jabeja(HashMap<Integer, Node> graph, Config config) {
@@ -29,7 +29,13 @@ public class Jabeja {
     this.round = 0;
     this.numberOfSwaps = 0;
     this.config = config;
-    this.T = config.getTemperature();
+    this.annealer = config
+            .getAnnealingType()
+            .getAnnealer(
+                    config.getTemperature(),
+                    config.getDelta(),
+                    config.getAlpha()
+            );
   }
 
 
@@ -42,20 +48,9 @@ public class Jabeja {
 
       //one cycle for all nodes have completed.
       //reduce the temperature
-      saCoolDown();
+      annealer.coolDown();
       report();
     }
-  }
-
-  /**
-   * Simulated analealing cooling function
-   */
-  private void saCoolDown(){
-    // TODO for second task
-    if (T > 1)
-      T -= config.getDelta();
-    if (T < 1)
-      T = 1;
   }
 
   /**
@@ -93,65 +88,14 @@ public class Jabeja {
   }
 
   public Optional<Node> findPartner(int nodeId, Integer[] nodes){
-
-    Node nodeP = entireGraph.get(nodeId);
-
-      return Arrays.stream(nodes)
-            .map(entireGraph::get)
-            .filter(
-                    node -> T * getCost(
-                            nodeP,
-                            node.getColor(),
-                            node,
-                            nodeP.getColor()
-                    ) > getCost(
-                            nodeP,
-                            nodeP.getColor(),
-                            node,
-                            node.getColor()
-                    )
-            )
-            .max(
-                    Comparator.comparingDouble(
-                            node -> getCost(
-                                    nodeP,
-                                    node.getColor(),
-                                    node,
-                                    nodeP.getColor()
-                            )
-                    )
-            );
+      return annealer.findPartner(
+              entireGraph.get(nodeId),
+              (Node[]) Arrays.stream(nodes).map(entireGraph::get).toArray(),
+              entireGraph
+      );
   }
 
     /**
-     * The cost of the nodes having the specified color configuration
-     * @param nodeP
-     * @param nodePColor
-     * @param nodeQ
-     * @param nodeQColor
-     * @return the cost
-     */
-  private Double getCost(Node nodeP, int nodePColor, Node nodeQ, int nodeQColor){
-      return pow(getDegree(nodeP, nodePColor), config.getAlpha())
-              + pow(getDegree(nodeQ, nodeQColor), config.getAlpha());
-  }
-
-  /**
-   * The the degreee on the node based on color
-   * @param node
-   * @param colorId
-   * @return how many neighbors of the node have color == colorId
-   */
-  private int getDegree(Node node, int colorId){
-    return (int) node
-            .getNeighbours()
-            .stream()
-            .map(entireGraph::get)
-            .filter(neighbour -> neighbour.getColor() == colorId)
-            .count();
-  }
-
-  /**
    * Returns a uniformly random sample of the graph
    * @param currentNodeId
    * @return Returns a uniformly random sample of the graph
