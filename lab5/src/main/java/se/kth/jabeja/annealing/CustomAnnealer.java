@@ -14,8 +14,10 @@ public class CustomAnnealer extends NonLinearAnnealer{
 
     @Override
     protected Double acceptanceProbability(Double oldCost, Double newCost, float temperature){
-        return exp(
-                (log(newCost) - log(oldCost)) / temperature
+        return 1/ (
+                1 + exp(
+                        -(newCost - oldCost) / temperature
+                )
         );
     }
 }
