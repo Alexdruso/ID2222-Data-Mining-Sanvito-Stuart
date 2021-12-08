@@ -169,7 +169,7 @@ public class Config {
 
     public AnnealingType getAnnealingType() {
         if (annealingType == null) {
-            throw new NullPointerException("No alpha provided");
+            throw new NullPointerException("No annealer provided");
         }
         return annealingType;
     }

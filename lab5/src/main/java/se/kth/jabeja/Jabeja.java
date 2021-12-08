@@ -10,6 +10,7 @@ import se.kth.jabeja.rand.RandNoGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collector;
 
 public class Jabeja {
   final static Logger logger = Logger.getLogger(Jabeja.class);
@@ -90,7 +91,7 @@ public class Jabeja {
   public Optional<Node> findPartner(int nodeId, Integer[] nodes){
       return annealer.findPartner(
               entireGraph.get(nodeId),
-              (Node[]) Arrays.stream(nodes).map(entireGraph::get).toArray(),
+              Arrays.stream(nodes).map(entireGraph::get).toArray(Node[] :: new),
               entireGraph
       );
   }

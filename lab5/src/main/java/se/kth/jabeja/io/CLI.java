@@ -3,6 +3,7 @@ package se.kth.jabeja.io;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import se.kth.jabeja.annealing.AnnealingType;
 import se.kth.jabeja.config.Config;
 import se.kth.jabeja.config.GraphInitColorPolicy;
 import se.kth.jabeja.config.NodeSelectionPolicy;
@@ -57,6 +58,10 @@ public class CLI {
   @Option(name = "-outputDir", usage = "Location of the output file(s)")
   private static String OUTPUT_DIR = "./output";
 
+  @Option(name="-annealingType", usage = "Sets the annealing type. Support LINEAR and EXPONENTIAL")
+  private String ANNEALING_TYPE = "LINEAR";
+  private AnnealingType annealingType = AnnealingType.LINEAR;
+
   public Config parseArgs(String[] args) throws FileNotFoundException {
     CmdLineParser parser = new CmdLineParser(this);
     parser.setUsageWidth(80);
@@ -82,6 +87,8 @@ public class CLI {
       } else {
         throw new IllegalArgumentException("Node selection policy is not supported");
       }
+
+      annealingType = AnnealingType.valueOf(ANNEALING_TYPE.toUpperCase());
 
     } catch (Exception e) {
       logger.error(e.getMessage());
@@ -110,6 +117,7 @@ public class CLI {
             .setNodeSelectionPolicy(nodeSelectionPolicy)
             .setGraphInitialColorPolicy(graphInitColorSelectionPolicy)
             .setOutputDir(OUTPUT_DIR)
-            .setAlpha(ALPHA);
+            .setAlpha(ALPHA)
+            .setAnnealingType(annealingType);
   }
 }
