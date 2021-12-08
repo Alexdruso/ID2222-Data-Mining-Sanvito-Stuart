@@ -143,14 +143,12 @@ public class Jabeja {
    * @return how many neighbors of the node have color == colorId
    */
   private int getDegree(Node node, int colorId){
-    int degree = 0;
-    for(int neighborId : node.getNeighbours()){
-      Node neighbor = entireGraph.get(neighborId);
-      if(neighbor.getColor() == colorId){
-        degree++;
-      }
-    }
-    return degree;
+    return (int) node
+            .getNeighbours()
+            .stream()
+            .map(entireGraph::get)
+            .filter(neighbour -> neighbour.getColor() == colorId)
+            .count();
   }
 
   /**

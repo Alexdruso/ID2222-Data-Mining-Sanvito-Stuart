@@ -37,7 +37,7 @@ public class CLI {
   @Option(name = "-seed", usage = "Seed.")
   private int SEED = 0;
 
-  @Option(name = "-alpha", usage = "Alpah parameter")
+  @Option(name = "-alpha", usage = "Alpha parameter")
   private float ALPHA = 2;
 
   @Option(name = "-randNeighborsSampleSize", usage = "Number of random neighbors sample size.")
