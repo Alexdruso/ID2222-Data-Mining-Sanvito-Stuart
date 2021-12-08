@@ -1,5 +1,7 @@
 package se.kth.jabeja.config;
 
+import se.kth.jabeja.annealing.AnnealingType;
+
 public class Config {
   private Integer numPartitions;
   private Integer rounds;
@@ -13,6 +15,12 @@ public class Config {
   private GraphInitColorPolicy initColorPolicy;
   private NodeSelectionPolicy nodeSelectionPolicy;
   private Float alpha;
+  private AnnealingType annealingType;
+
+  public Config setAnnealingType(AnnealingType annealingType){
+      this.annealingType = annealingType;
+      return this;
+  }
 
   public Config setAlpha(Float alpha) {
     this.alpha = alpha;
@@ -154,9 +162,17 @@ public class Config {
 
   public Float getAlpha() {
     if (alpha == null) {
+        throw new NullPointerException("No alpha provided");
     }
     return alpha;
   }
+
+    public AnnealingType getAnnealingType() {
+        if (annealingType == null) {
+            throw new NullPointerException("No alpha provided");
+        }
+        return annealingType;
+    }
 
   public Config createJabejaConfig() {
     return new Config();
