@@ -1,17 +1,21 @@
 package se.kth.jabeja.annealing;
 
-import se.kth.jabeja.Node;
+import java.util.Random;
 
-import java.util.HashMap;
-import java.util.Optional;
+import static java.lang.Math.exp;
+import static java.lang.Math.log;
 
-public class CustomAnnealer extends Annealer{
+public class CustomAnnealer extends NonLinearAnnealer{
+    private final Random randomGenerator = new Random();
+
     CustomAnnealer(float temperature, float delta, float alpha) {
         super(temperature, delta, alpha);
     }
 
     @Override
-    public Optional<Node> findPartner(Node node, Node[] candidates, HashMap<Integer, Node> entireGraph) {
-        return Optional.empty();
+    protected Double acceptanceProbability(Double oldCost, Double newCost, float temperature){
+        return exp(
+                (log(newCost) - log(oldCost)) / temperature
+        );
     }
 }
