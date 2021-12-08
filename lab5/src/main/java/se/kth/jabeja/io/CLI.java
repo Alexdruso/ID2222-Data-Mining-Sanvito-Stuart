@@ -59,7 +59,7 @@ public class CLI {
   private static String OUTPUT_DIR = "./output";
 
   @Option(name="-annealingType", usage = "Sets the annealing type. Support LINEAR and EXPONENTIAL")
-  private String ANNEALING_TYPE = "LINEAR";
+  private static String ANNEALING_TYPE = "LINEAR";
   private AnnealingType annealingType = AnnealingType.LINEAR;
 
   public Config parseArgs(String[] args) throws FileNotFoundException {
@@ -68,26 +68,9 @@ public class CLI {
     try {
       // parse the arguments.
       parser.parseArgument(args);
-      if (GRAPH_INIT_COLOR_SELECTION_POLICY.compareToIgnoreCase(GraphInitColorPolicy.RANDOM.toString()) == 0) {
-        graphInitColorSelectionPolicy = GraphInitColorPolicy.RANDOM;
-      } else if (GRAPH_INIT_COLOR_SELECTION_POLICY.compareToIgnoreCase(GraphInitColorPolicy.BATCH.toString()) == 0) {
-        graphInitColorSelectionPolicy = GraphInitColorPolicy.BATCH;
-      } else if (GRAPH_INIT_COLOR_SELECTION_POLICY.compareToIgnoreCase(GraphInitColorPolicy.ROUND_ROBIN.toString()) == 0) {
-        graphInitColorSelectionPolicy = GraphInitColorPolicy.ROUND_ROBIN;
-      } else {
-        throw new IllegalArgumentException("Initial color selection policy is not supported");
-      }
 
-      if (NODE_SELECTION_POLICY.compareToIgnoreCase(NodeSelectionPolicy.RANDOM.toString()) == 0) {
-        nodeSelectionPolicy = NodeSelectionPolicy.RANDOM;
-      } else if (NODE_SELECTION_POLICY.compareToIgnoreCase(NodeSelectionPolicy.LOCAL.toString()) == 0) {
-        nodeSelectionPolicy = NodeSelectionPolicy.LOCAL;
-      } else if (NODE_SELECTION_POLICY.compareToIgnoreCase(NodeSelectionPolicy.HYBRID.toString()) == 0) {
-        nodeSelectionPolicy = NodeSelectionPolicy.HYBRID;
-      } else {
-        throw new IllegalArgumentException("Node selection policy is not supported");
-      }
-
+      graphInitColorSelectionPolicy = GraphInitColorPolicy.valueOf(GRAPH_INIT_COLOR_SELECTION_POLICY.toUpperCase());
+      nodeSelectionPolicy = NodeSelectionPolicy.valueOf(NODE_SELECTION_POLICY.toUpperCase());
       annealingType = AnnealingType.valueOf(ANNEALING_TYPE.toUpperCase());
 
     } catch (Exception e) {
