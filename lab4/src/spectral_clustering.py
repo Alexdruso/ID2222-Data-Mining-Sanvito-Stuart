@@ -59,6 +59,9 @@ def spectral_clustering(
     if verbose:
         print('Clusters computed.')
 
+    # vectors of the laplacian for the fiedler
+    _, vectors = linalg.eigh(D-A)
+
     return result, vectors[:, 1], A
 
 
