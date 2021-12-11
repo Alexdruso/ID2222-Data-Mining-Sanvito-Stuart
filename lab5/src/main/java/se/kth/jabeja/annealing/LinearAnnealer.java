@@ -13,33 +13,7 @@ public class LinearAnnealer extends Annealer {
     }
 
     @Override
-    public Optional<Node> findPartner(Node node, Node[] candidates, HashMap<Integer, Node> entireGraph) {
-        return Arrays.stream(candidates)
-                .filter(
-                        candidate -> temperature * getCost(
-                                node,
-                                candidate.getColor(),
-                                candidate,
-                                node.getColor(),
-                                entireGraph
-                        ) > getCost(
-                                node,
-                                node.getColor(),
-                                candidate,
-                                candidate.getColor(),
-                                entireGraph
-                        )
-                )
-                .max(
-                        Comparator.comparingDouble(
-                                candidate -> getCost(
-                                        node,
-                                        candidate.getColor(),
-                                        candidate,
-                                        node.getColor(),
-                                        entireGraph
-                                )
-                        )
-                );
+    protected Double acceptanceProbability(Double oldCost, Double newCost, float temperature) {
+        return temperature*(newCost) > oldCost? 1.0 : 0.0;
     }
 }

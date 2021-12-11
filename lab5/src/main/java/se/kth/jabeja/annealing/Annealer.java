@@ -2,8 +2,7 @@ package se.kth.jabeja.annealing;
 
 import se.kth.jabeja.Node;
 
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 import static java.lang.Math.pow;
 
@@ -11,6 +10,7 @@ public abstract class Annealer {
     protected float temperature;
     protected float delta;
     protected float alpha;
+    protected final Random randomGenerator = new Random();
 
     Annealer(float temperature, float delta, float alpha){
         this.temperature = temperature;
@@ -23,7 +23,32 @@ public abstract class Annealer {
         else temperature = 1;
     }
 
-    public abstract Optional<Node> findPartner(Node node, Node[] candidates, HashMap<Integer, Node> entireGraph);
+    protected abstract Double acceptanceProbability(Double oldCost, Double newCost, float temperature);
+
+    public Optional<Node> findPartner(
+            Node node,
+            Node[] candidates,
+            HashMap<Integer, Node> entireGraph){
+        return Arrays.stream(candidates)
+                .filter(
+                        candidate -> acceptanceProbability(
+                                getCost(node, node.getColor(), candidate, candidate.getColor(), entireGraph),
+                                getCost(node, candidate.getColor(), candidate, node.getColor(), entireGraph),
+                                temperature
+                        ) > randomGenerator.nextDouble()
+                )
+                .max(
+                        Comparator.comparingDouble(
+                                candidate -> getCost(
+                                        node,
+                                        candidate.getColor(),
+                                        candidate,
+                                        node.getColor(),
+                                        entireGraph
+                                )
+                        )
+                );
+    }
 
     protected Double getCost(
             Node nodeP,
