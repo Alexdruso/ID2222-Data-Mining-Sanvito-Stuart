@@ -10,4 +10,4 @@ fi
 
 gnuplot -e "filename='$1'" graph.gnuplot
 
-xdg-open graph.png
+#xdg-open graph.png

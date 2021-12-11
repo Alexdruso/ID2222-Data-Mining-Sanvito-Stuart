@@ -210,7 +210,7 @@ public class Jabeja {
             "URSS" + "_" + config.getUniformRandomSampleSize() + "_" +
             "A" + "_" + config.getAlpha() + "_" +
             "R" + "_" + config.getRounds() + "_" +
-            "ANNEALER" + config.getAnnealingType() + ".txt";
+            "ANNEALER_" + config.getAnnealingType() + ".txt";
 
     if (!resultFileCreated) {
       File outputDir = new File(config.getOutputDir());
