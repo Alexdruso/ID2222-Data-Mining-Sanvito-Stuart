@@ -7,6 +7,7 @@ import java.util.*;
 import static java.lang.Math.pow;
 
 public abstract class Annealer {
+
     protected float temperature;
     protected float delta;
     protected float alpha;
@@ -16,6 +17,10 @@ public abstract class Annealer {
         this.temperature = temperature;
         this.delta = delta;
         this.alpha = alpha;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
     }
 
     public void coolDown(){

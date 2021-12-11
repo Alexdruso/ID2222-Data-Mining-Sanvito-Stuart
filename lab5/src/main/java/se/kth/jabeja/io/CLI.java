@@ -62,6 +62,9 @@ public class CLI {
   private static String ANNEALING_TYPE = "LINEAR";
   private AnnealingType annealingType = AnnealingType.LINEAR;
 
+  @Option(name="-restart", usage = "Sets the number of rounds after which the temperature is restarted to the original")
+  private int restartRounds = -1;
+
   public Config parseArgs(String[] args) throws FileNotFoundException {
     CmdLineParser parser = new CmdLineParser(this);
     parser.setUsageWidth(80);
@@ -101,6 +104,7 @@ public class CLI {
             .setGraphInitialColorPolicy(graphInitColorSelectionPolicy)
             .setOutputDir(OUTPUT_DIR)
             .setAlpha(ALPHA)
-            .setAnnealingType(annealingType);
+            .setAnnealingType(annealingType)
+            .setRestartRounds(restartRounds);
   }
 }

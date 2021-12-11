@@ -50,6 +50,9 @@ public class Jabeja {
       //one cycle for all nodes have completed.
       //reduce the temperature
       annealer.coolDown();
+      if(config.getRestartRounds()>=0 && round%config.getRestartRounds() == 0)
+          annealer.setTemperature(config.getTemperature());
+      
       report();
     }
   }
@@ -210,6 +213,7 @@ public class Jabeja {
             "URSS" + "_" + config.getUniformRandomSampleSize() + "_" +
             "A" + "_" + config.getAlpha() + "_" +
             "R" + "_" + config.getRounds() + "_" +
+            "RESTART" + "_" + config.getRestartRounds() + "_" +
             "ANNEALER_" + config.getAnnealingType() + ".txt";
 
     if (!resultFileCreated) {

@@ -16,6 +16,12 @@ public class Config {
   private NodeSelectionPolicy nodeSelectionPolicy;
   private Float alpha;
   private AnnealingType annealingType;
+  private Integer restartRounds;
+
+  public Config setRestartRounds(Integer restartRounds){
+      this.restartRounds = restartRounds;
+      return this;
+  }
 
   public Config setAnnealingType(AnnealingType annealingType){
       this.annealingType = annealingType;
@@ -172,6 +178,13 @@ public class Config {
             throw new NullPointerException("No annealer provided");
         }
         return annealingType;
+    }
+
+    public Integer getRestartRounds(){
+        if (restartRounds == null) {
+            throw new NullPointerException("No restart rounds provided");
+        }
+      return restartRounds;
     }
 
   public Config createJabejaConfig() {
