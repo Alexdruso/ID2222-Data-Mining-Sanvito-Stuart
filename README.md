@@ -13,7 +13,7 @@ In particular, each lab comprises the following implementations:
 | **Folder** |                    **Algorithms**                   |
 |:----------:|:---------------------------------------------------:|
 |    lab1    | Shngling, Min-hashing, Local Sensitive Hashing(LSH) |
-|    lab2    |  A-priori algoriithm, Association Rules generation  |
+|    lab2    |  A-priori algorithm, Association Rules generation  |
 |    lab3    |                        Triest                       |
 |    lab4    |                 Spectral Clustering                 |
 |    lab5    |                        JaBeJa                       |
